@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSP Text To File Maker | CyberShadowPK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="noise"></div>
+<div class="channel-overlay" id="channelPopup" aria-hidden="true">
+  <div class="channel-popup" role="dialog" aria-modal="true" aria-labelledby="channelPopupTitle">
+    <button class="channel-close" id="channelPopupClose" aria-label="Close popup">&times;</button>
+    <div class="channel-icon">WA</div>
+    <div class="channel-kicker">CYBERSHADOWPK CHANNEL</div>
+    <h2 id="channelPopupTitle">Join Our WhatsApp Channel</h2>
+    <p>Stay updated with CyberShadowPK news, tools, projects and new releases.</p>
+    <a class="channel-join" href="https://whatsapp.com/channel/0029VbCNNEzLCoX9wla4yb2e" target="_blank" rel="noopener noreferrer">Join WhatsApp Channel</a>
+    <button class="channel-later" id="channelPopupLater" type="button">Maybe later</button>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <canvas id="threadCanvas"></canvas>
+  <div class="hero-content">
+    <div class="emblem-ring"><img src="images/image-02.jpg" alt="CyberShadowPK"></div>
+    <div class="eyebrow">CYBERSHADOWPK STUDIO</div>
+    <h1 class="hero-title">Text To File Maker<br><em>— crafted for creators</em></h1>
+    <p class="hero-sub">A private, browser-only studio for turning raw text into <b>polished, downloadable files</b> — no uploads, no servers, no trace. Built and maintained by <b>ShahidHackerBoy</b>.</p>
+    <div class="hero-cta">
+      <button class="cta-gold" id="scrollToStudio">Open the Studio</button>
+      <button class="cta-ghost" id="scrollToFeatures">See what's inside</button>
+    </div>
+  </div>
+  <div class="scroll-cue"></div>
+</section>
+
+<div class="wrap">
+
+  <!-- ===== STUDIO ===== -->
+  <div id="studioSection" class="reveal">
+    <div class="section-head">
+      <div class="kicker">THE WORKBENCH</div>
+      <h2>Write once, export anywhere</h2>
+      <p>Draft your content, choose a format, and walk away with a finished file — or a whole batch of them.</p>
+    </div>
+
+    <div class="studio">
+      <div class="studio-inner">
+
+        <div class="studio-topbar">
+          <div class="label">Live Session</div>
+          <div class="kbd-hint">Press <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to download instantly</div>
+        </div>
+
+        <div class="toolbar">
+          <button class="tool-btn" id="btnLoadFile">📂 Load Text File</button>
+          <button class="tool-btn" id="btnTemplateHtml">🧩 HTML Boilerplate</button>
+          <button class="tool-btn" id="btnTemplateCss">🎨 CSS Starter</button>
+          <button class="tool-btn" id="btnTemplateJs">⚙️ JS Starter</button>
+          <button class="tool-btn" id="btnTemplateJson">🗂️ JSON Sample</button>
+          <button class="tool-btn" id="btnClear">🧹 Clear Editor</button>
+          <input type="file" id="hiddenFileInput" style="display:none" accept=".txt,.md,.html,.htm,.js,.css,.json,.xml,.csv,.log,.yml,.yaml">
+        </div>
+
+        <div class="grid">
+          <!-- LEFT -->
+          <div class="card">
+            <h3>Text Editor <span class="count" id="editorHint">draft your content</span></h3>
+            <textarea id="textInput" placeholder="Type or paste your text here..."></textarea>
+
+            <div class="filename-row">
+              <div class="field">
+                <label>File Name</label>
+                <input type="text" id="fileName" value="my-file" placeholder="e.g. notes, index, data">
+              </div>
+              <div class="field ext-box">
+                <label>Format</label>
+                <select id="fileExt">
+                  <option value=".txt">.txt</option>
+                  <option value=".html">.html</option>
+                  <option value=".md">.md</option>
+                  <option value=".json">.json</option>
+                  <option value=".css">.css</option>
+                  <option value=".js">.js</option>
+                  <option value=".xml">.xml</option>
+                  <option value=".csv">.csv</option>
+                  <option value=".yml">.yml</option>
+                  <option value=".log">.log</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="main-actions">
+              <button class="btn btn-primary" id="btnDownload">⬇ Download File</button>
+              <button class="btn btn-secondary" id="btnAddQueue">＋ Add to Batch</button>
+              <button class="btn btn-secondary" id="btnCopy">⧉ Copy Text</button>
+            </div>
+          </div>
+
+          <!-- RIGHT -->
+          <div class="card">
+            <h3>Live Stats</h3>
+            <div class="stats-grid">
+              <div class="stat-box"><div class="num" id="statChars">0</div><div class="lbl">Characters</div></div>
+              <div class="stat-box"><div class="num" id="statWords">0</div><div class="lbl">Words</div></div>
+              <div class="stat-box"><div class="num" id="statLines">0</div><div class="lbl">Lines</div></div>
+              <div class="stat-box"><div class="num" id="statRead">0s</div><div class="lbl">Reading Time</div></div>
+            </div>
+
+            <h3>Text Case Tools</h3>
+            <div class="case-btns">
+              <button class="tool-btn" data-case="upper">UPPER</button>
+              <button class="tool-btn" data-case="lower">lower</button>
+              <button class="tool-btn" data-case="title">Title Case</button>
+              <button class="tool-btn" data-case="trim">Trim Lines</button>
+            </div>
+
+            <h3>Find &amp; Replace</h3>
+            <div class="find-replace">
+              <div class="row">
+                <div class="field"><input type="text" id="findText" placeholder="Find..."></div>
+                <div class="field"><input type="text" id="replaceText" placeholder="Replace with..."></div>
+              </div>
+              <div class="row">
+                <button class="btn btn-secondary" id="btnReplace" style="flex:1;padding:10px;font-size:12.5px;">Replace All</button>
+              </div>
+            </div>
+
+            <h3>Batch Queue <span class="count" id="queueCount">0 files</span></h3>
+            <div class="queue" id="queueList">
+              <div class="queue-empty">No files added yet — use "Add to Batch"</div>
+            </div>
+            <div class="main-actions">
+              <button class="btn btn-primary" id="btnDownloadZip">📦 Download ZIP</button>
+              <button class="btn btn-danger" id="btnClearQueue">Clear</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;" id="previewPanel">
+          <h3>Live HTML Preview <span class="count" id="previewHint">auto-shows for .html</span></h3>
+          <div class="preview-box"><iframe id="previewFrame"></iframe></div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <h3>Download History <span class="count" id="historyCount">This session</span></h3>
+          <div class="history-list" id="historyList">
+            <div class="history-empty">Nothing downloaded yet this session</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FEATURES ===== -->
+  <div id="featuresSection" class="reveal">
+    <div class="features">
+      <div class="feature">
+        <div class="fnum">01</div>
+        <h4>Ten formats, one editor</h4>
+        <p>Export the same draft as .txt, .html, .md, .json, .css, .js, .xml, .csv, .yml or .log — swap formats without losing your work.</p>
+      </div>
+      <div class="feature">
+        <div class="fnum">02</div>
+        <h4>Batch &amp; ship as ZIP</h4>
+        <p>Queue up several files from different drafts and export the whole batch as a single ZIP archive, built entirely in your browser.</p>
+      </div>
+      <div class="feature">
+        <div class="fnum">03</div>
+        <h4>Nothing leaves your device</h4>
+        <p>There's no server behind this. Every conversion, preview and export happens locally — your text is never transmitted anywhere.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="fbrand">CyberShadowPK</div>
+  Owner: ShahidHackerBoy &bull; Private, browser-only tooling &bull; <span id="year"></span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+
+<script src="js/app.js"></script>
+</body>
+</html>
